@@ -4,7 +4,7 @@ class ExpensesController < ApplicationController
   expose(:expense, attributes: :expense_params)
 
   def index
-    expenses = Expense.all
+    expenses = current_user.family.expenses.all
     render json: expenses
   end
 
