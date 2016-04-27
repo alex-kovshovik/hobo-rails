@@ -1,13 +1,16 @@
 Rails.application.routes.draw do
-  resources :expenses
-  resources :expens
   devise_for :users
 
   root to: 'home#index'
 
+  # Authentication / registration
   post 'auth/register', to: 'auth#register'
   post 'auth/check', to: 'auth#check'
 
-  resources :budgets
+  # Main application
+  resources :budgets do
+    resources :expenses
+  end
+
   resources :expenses
 end
