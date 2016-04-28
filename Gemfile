@@ -25,6 +25,12 @@ gem 'active_model_serializers'
 group :development, :test do
   gem 'pry-rails'
   gem 'pry-byebug'
+  gem 'rspec-rails', '~> 3.0'
+  gem 'factory_girl_rails'
+end
+
+group :test do
+  gem 'database_cleaner'
 end
 
 group :development do

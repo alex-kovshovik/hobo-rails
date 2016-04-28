@@ -4,12 +4,13 @@ class ExpensesController < ApplicationController
   expose(:expense, attributes: :expense_params)
 
   def index
-    expenses = current_user.family.expenses.all
-    render json: expenses
+    @expenses = load_expenses.all
+    render json: @expenses
   end
 
   def show
-    respond_with(expense)
+    @expense = load_expenses.find(params[:id])
+    respond_with(@expense)
   end
 
   def create
@@ -18,14 +19,27 @@ class ExpensesController < ApplicationController
   end
 
   def update
+    @expense = load_expenses.find(params[:id])
+    @expense.save!
+
+    respond_with(@expense)
   end
 
   def destroy
-    expense.destroy
+    @expense = load_expenses.find(params[:id])
+    @expense.destroy
+
     head :ok
   end
 
   private
+
+  def load_expenses
+    expenses = current_user.family.expenses
+    expenses = expenses.where(budget_id: params[:budget_id]) if params[:budget_id]
+
+    expenses
+  end
 
   def expense_params
     params.require(:expense).permit(:budget_id, :amount, :comment)
