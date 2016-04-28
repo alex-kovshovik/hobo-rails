@@ -10,6 +10,8 @@ class User < ActiveRecord::Base
 
   before_save :set_family
 
+  delegate :expenses, :budgets, to: :family
+
   private
 
   def set_family

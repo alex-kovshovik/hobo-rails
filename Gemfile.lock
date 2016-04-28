@@ -60,7 +60,6 @@ GEM
     concurrent-ruby (1.0.1)
     database_cleaner (1.5.1)
     debug_inspector (0.0.2)
-    decent_exposure (2.3.3)
     devise (3.5.6)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -121,6 +120,8 @@ GEM
       pry (~> 0.10)
     pry-rails (0.3.4)
       pry (>= 0.9.10)
+    pundit (1.1.0)
+      activesupport (>= 3.0.0)
     rack (1.6.4)
     rack-test (0.6.3)
       rack (>= 1.0)
@@ -237,7 +238,6 @@ DEPENDENCIES
   awesome_print
   coffee-rails (~> 4.1.0)
   database_cleaner
-  decent_exposure
   devise
   factory_girl_rails
   jbuilder (~> 2.0)
@@ -246,9 +246,9 @@ DEPENDENCIES
   pg (~> 0.15)
   pry-byebug
   pry-rails
+  pundit
   rails (= 4.2.6)
   rails_best_practices
-  responders
   rspec-rails (~> 3.0)
   rubocop
   sass-rails (~> 5.0)

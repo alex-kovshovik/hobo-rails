@@ -1,7 +1,7 @@
 class ExpenseSerializer < ActiveModel::Serializer
-  attributes :id, :budget, :budget_id, :amount, :comment
+  attributes :id, :budget_id, :amount, :comment, :created_at, :errors
 
-  def budget
-    object.budget.name
+  def errors
+    object.errors.full_messages.join(', ')
   end
 end

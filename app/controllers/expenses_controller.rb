@@ -1,32 +1,34 @@
 # Expenses resources
 class ExpensesController < ApplicationController
-  respond_to(:json)
-  expose(:expense, attributes: :expense_params)
+  before_action :load_budget, only: %i(show create update destroy)
+  before_action :load_expense, only: %i(show update destroy)
 
+  # Index is special: it could either render all user's expenses
+  # with all specified filters applied, or it could render just
+  # expenses within a specific budget.
   def index
-    @expenses = load_expenses.all
+    @expenses = find_expenses.all
     render json: @expenses
   end
 
   def show
-    @expense = load_expenses.find(params[:id])
-    respond_with(@expense)
+    render json: @expense, status: :ok
   end
 
   def create
-    expense.save
-    respond_with(expense)
+    @expense = Expense.new(expense_params)
+    @expense.budget = @budget
+
+    status = @expense.save ? :ok : :unprocessable_entity
+    render json: @expense, status: status
   end
 
   def update
-    @expense = load_expenses.find(params[:id])
-    @expense.save!
-
-    respond_with(@expense)
+    status = @expense.update_attributes(expense_params) ? :ok : :unprocessable_entity
+    render json: @expense, status: status
   end
 
   def destroy
-    @expense = load_expenses.find(params[:id])
     @expense.destroy
 
     head :ok
@@ -34,14 +36,22 @@ class ExpensesController < ApplicationController
 
   private
 
-  def load_expenses
-    expenses = current_user.family.expenses
+  def load_budget
+    @budget = current_user.budgets.find(params[:budget_id])
+  end
+
+  def load_expense
+    @expense = @budget.expenses.find(params[:id])
+  end
+
+  def find_expenses
+    expenses = current_user.expenses
     expenses = expenses.where(budget_id: params[:budget_id]) if params[:budget_id]
 
     expenses
   end
 
   def expense_params
-    params.require(:expense).permit(:budget_id, :amount, :comment)
+    params.require(:expense).permit(:amount, :comment)
   end
 end
