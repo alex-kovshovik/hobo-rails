@@ -45,7 +45,7 @@ class ExpensesController < ApplicationController
   end
 
   def find_expenses
-    expenses = current_user.expenses
+    expenses = current_user.expenses.order(created_at: :desc)
     expenses = expenses.where(budget_id: params[:budget_id]) if params[:budget_id]
 
     expenses
