@@ -25,6 +25,13 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.0'
   gem 'factory_girl_rails'
+
+  # Deployment
+  gem "capistrano", "~> 3.4"
+  gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano-rvm'
+  gem 'capistrano-passenger'
+  gem 'airbrussh', require: false
 end
 
 group :test do
