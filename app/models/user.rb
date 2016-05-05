@@ -9,6 +9,7 @@ class User < ActiveRecord::Base
   belongs_to :family
 
   before_save :set_family
+  after_create :create_default_budgets
 
   delegate :expenses, :budgets, to: :family
 
@@ -18,5 +19,11 @@ class User < ActiveRecord::Base
     return if family
 
     self.family = Family.create(name: email)
+  end
+
+  def create_default_budgets
+    Budget::DEFAULTS.each do |budget_name|
+      self.family.budgets << Budget.new(name: budget_name, amount: 100.0)
+    end
   end
 end
