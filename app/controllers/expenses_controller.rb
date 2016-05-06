@@ -1,7 +1,7 @@
 # Expenses resources
 class ExpensesController < ApplicationController
-  before_action :load_budget, only: %i(show create update destroy)
-  before_action :load_expense, only: %i(show update destroy)
+  before_action :load_budget, only: %i(show create update)
+  before_action :load_expense, only: %i(show update)
 
   # Index is special: it could either render all user's expenses
   # with all specified filters applied, or it could render just
@@ -29,9 +29,14 @@ class ExpensesController < ApplicationController
   end
 
   def destroy
-    @expense.destroy
+    @expense = find_expenses.where(id: params[:id]).first
 
-    head :ok
+    if @expense
+      @expense.destroy
+      render json: @expense, status: :ok
+    else
+      head :not_found
+    end
   end
 
   private

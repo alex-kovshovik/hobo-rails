@@ -12,5 +12,5 @@ Rails.application.routes.draw do
     resources :expenses
   end
 
-  resources :expenses, only: :index
+  resources :expenses, only: [:index, :destroy]
 end
