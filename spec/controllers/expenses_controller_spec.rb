@@ -52,6 +52,9 @@ describe ExpensesController do
       new_expense = assigns(:expense)
       expect(new_expense.amount).to eq(32.23)
       expect(new_expense.comment).to eq('no comment')
+      expect(new_expense.created_by).to eq(user.id)
+      expect(new_expense.updated_by).to eq(user.id)
+      expect(new_expense.changed_by).to eq("ExpensesController/create")
     end
 
     it 'renders errors properly' do
