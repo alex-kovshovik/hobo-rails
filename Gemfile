@@ -10,6 +10,7 @@ gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'request_store'
+gem 'awesome_print'
 
 # Authentication and Facebook
 gem 'devise'
@@ -42,7 +43,6 @@ end
 group :development do
   gem 'web-console', '~> 2.0'
   gem 'spring'
-  gem 'awesome_print'
   gem 'rails_best_practices'
   gem 'rubocop'
 end
