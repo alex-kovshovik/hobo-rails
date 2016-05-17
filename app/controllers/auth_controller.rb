@@ -16,6 +16,8 @@ class AuthController < ApplicationController
       user.save!
     end
 
+    update_user_profile(user, @profile)
+
     render json: { email: user.email, token: user.authentication_token }, status: :ok
   end
 
@@ -37,11 +39,22 @@ class AuthController < ApplicationController
     graph = Koala::Facebook::API.new(params[:facebookAccessToken])
 
     # This makes a simple Facebook call to make sure we have access
-    profile = graph.get_object('me?fields=name,email,currency,timezone')
-    raise :unauthorized if params[:email] != profile['email']
+    @profile = graph.get_object('me?fields=first_name,last_name,email,currency,timezone')
+    raise :unauthorized if params[:email] != @profile['email']
   rescue Koala::Facebook::AuthenticationError
     head :unauthorized
   rescue StandardError
     head :unprocessable_entity
+  end
+
+  def update_user_profile(user, profile)
+    user.first_name = profile['first_name']
+    user.last_name = profile['last_name']
+    user.save!
+
+    family = user.family
+    family.currency = profile['currency']['user_currency']
+    family.timezone = profile['timezone']
+    family.save!
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160506181003) do
+ActiveRecord::Schema.define(version: 20160517204737) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -48,6 +48,8 @@ ActiveRecord::Schema.define(version: 20160506181003) do
     t.integer "created_by"
     t.integer "updated_by"
     t.string  "changed_by"
+    t.string  "currency",   default: "USD", null: false
+    t.integer "timezone",   default: -4,    null: false
   end
 
   create_table "users", force: :cascade do |t|
