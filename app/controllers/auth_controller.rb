@@ -35,7 +35,9 @@ class AuthController < ApplicationController
 
   def validate_facebook_token
     graph = Koala::Facebook::API.new(params[:facebookAccessToken])
-    profile = graph.get_object('me?fields=name,email') # This makes a simple facebook call to make sure we have access
+
+    # This makes a simple Facebook call to make sure we have access
+    profile = graph.get_object('me?fields=name,email,currency,timezone')
     raise :unauthorized if params[:email] != profile['email']
   rescue Koala::Facebook::AuthenticationError
     head :unauthorized

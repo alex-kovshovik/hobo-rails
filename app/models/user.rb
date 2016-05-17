@@ -3,26 +3,27 @@ class User < ActiveRecord::Base
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable
+  devise :database_authenticatable, :recoverable, :rememberable, :trackable, :validatable
 
   belongs_to :family
 
-  before_save :set_family
-  after_create :create_default_budgets
+  after_create :set_family, :create_default_budgets
 
   delegate :expenses, :budgets, to: :family
 
   private
 
   def set_family
-    return if family
+    new_family = Family.create(name: email)
 
-    self.family = Family.create(name: email)
+    self.family = new_family
+    self.save!
   end
 
   def create_default_budgets
     Budget::DEFAULTS.each do |budget_name|
+      next if self.family.budgets.where(name: budget_name).exists?
+
       self.family.budgets << Budget.new(name: budget_name, amount: 100.0)
     end
   end

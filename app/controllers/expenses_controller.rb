@@ -53,6 +53,16 @@ class ExpensesController < ApplicationController
     expenses = current_user.expenses.order(created_at: :desc)
     expenses = expenses.where(budget_id: params[:budget_id]) if params[:budget_id]
 
+    if params[:week]
+      week = params[:week].to_i
+      week_start_date = Date.today.beginning_of_week
+      week_end_date = Date.today.end_of_week
+
+      start_date = week_start_date - week.weeks
+      end_date = week_end_date - week.weeks
+      expenses = expenses.where('expenses.created_at between ? and ?', start_date, end_date)
+    end
+
     expenses
   end
 
