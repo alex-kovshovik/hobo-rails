@@ -61,8 +61,9 @@ class ExpensesController < ApplicationController
       week_start_time = time_service.week_start_time
       week_end_time = time_service.week_end_time
 
-      start_time = week_start_time - week.weeks
-      end_time = week_end_time - week.weeks
+      # week param is a negative number darn it
+      start_time = week_start_time + week.weeks
+      end_time = week_end_time + week.weeks
 
       expenses = expenses.where('expenses.created_at between ? and ?', start_time, end_time)
     end
