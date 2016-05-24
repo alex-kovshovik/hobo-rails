@@ -18,7 +18,7 @@ class AuthController < ApplicationController
 
     update_user_profile(user, @profile)
 
-    render json: { email: user.email, token: user.authentication_token }, status: :ok
+    render json: user, status: :ok
   end
 
   # Accepts "email" and "token".
@@ -26,9 +26,11 @@ class AuthController < ApplicationController
   #  - with HTTP OK (200) if correct
   #  - with HTTP UNAUTHORIZED (401) if incorrect
   def check
-    user = User.find_by(email: params[:email], authentication_token: params[:token])
+    puts params.inspect
+    
+    user = User.find_by!(email: params[:email], authentication_token: params[:token])
 
-    head user.present? ? :ok : :unauthorized
+    render json: user, status: :ok
   rescue
     head :unauthorized
   end
@@ -57,4 +59,5 @@ class AuthController < ApplicationController
     family.timezone = profile['timezone']
     family.save!
   end
+
 end
