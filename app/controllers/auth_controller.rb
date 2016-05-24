@@ -26,8 +26,6 @@ class AuthController < ApplicationController
   #  - with HTTP OK (200) if correct
   #  - with HTTP UNAUTHORIZED (401) if incorrect
   def check
-    puts params.inspect
-    
     user = User.find_by!(email: params[:email], authentication_token: params[:token])
 
     render json: user, status: :ok

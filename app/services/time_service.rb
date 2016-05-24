@@ -13,4 +13,8 @@ class TimeService
     d = Date.today.end_of_week
     Time.new(d.year, d.month, d.day, 23, 59, 59)
   end
+
+  def now
+    Time.now
+  end
 end
