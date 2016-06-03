@@ -1,5 +1,5 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :email, :week_fraction, :created_at, :currency
+  attributes :id, :email, :authentication_token, :week_fraction, :created_at, :currency
 
   def week_fraction
     time = TimeService.new(object)
