@@ -1,6 +1,5 @@
 # Expenses resources
 class ExpensesController < ApplicationController
-  before_action :load_budget, only: %i(show create update)
   before_action :load_expense, only: %i(show update)
 
   # Index is special: it could either render all user's expenses
@@ -17,7 +16,7 @@ class ExpensesController < ApplicationController
 
   def create
     @expense = Expense.new(expense_params)
-    @expense.budget = @budget
+    @expense.budget = load_budget
 
     status = @expense.save ? :ok : :unprocessable_entity
     render json: @expense, status: status
@@ -46,7 +45,15 @@ class ExpensesController < ApplicationController
   end
 
   def load_expense
-    @expense = @budget.expenses.find(params[:id])
+    base_relation =
+      if params[:budget_id]
+        budget = load_budget
+        budget.expenses
+      else
+        current_user.expenses
+      end
+
+    @expense = base_relation.find(params[:id])
   end
 
   def find_expenses
