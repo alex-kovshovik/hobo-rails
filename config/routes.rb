@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # Main application
   resources :budgets, only: :index do
     resources :expenses
+    post :update, on: :collection
   end
 
   resources :expenses, only: [:index, :show, :destroy]
