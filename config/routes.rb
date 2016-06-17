@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   post 'auth/check', to: 'auth#check'
 
   # Main application
-  resources :budgets, only: :index do
+  resources :budgets, only: [:index, :destroy] do
     resources :expenses
     post :update, on: :collection
   end

@@ -16,6 +16,17 @@ class BudgetsController < ApplicationController
     render json: budgets, status: :ok
   end
 
+  def destroy
+    budget = current_user.budgets.where(id: params[:id]).first
+
+    if budget
+      budget.destroy
+      render json: budget, status: :ok
+    else
+      head :not_found
+    end
+  end
+
   private
 
   def update_budgets(budgets)
