@@ -1,4 +1,4 @@
-class Expense < ActiveRecord::Base
+class Expense < ApplicationRecord
   belongs_to :budget
 
   validates :amount, presence: true

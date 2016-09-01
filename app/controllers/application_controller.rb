@@ -1,13 +1,37 @@
-class ApplicationController < ActionController::Base
-  include Pundit
+class ApplicationController < ActionController::API
+  include ActionController::HttpAuthentication::Token::ControllerMethods
 
-  acts_as_token_authentication_handler_for User
-  before_action :authenticate_user!, :setup_stamps
+  before_action :authenticate, :set_audit_info
 
-  private
+  attr_reader :current_user
 
-  def setup_stamps
-    System.current_user = current_user
-    System.current_process = "#{self.class}/#{action_name}"
+  protected
+
+  def authenticate
+    authenticate_token || render_unauthorized
+  end
+
+  def authenticate_token
+    authenticate_with_http_token do |token, options|
+      email = options['email']
+      next nil if email.blank?
+
+      user = User.find_by(email: email)
+      next nil if user.blank?
+
+      if ActiveSupport::SecurityUtils.secure_compare(user.api_key, token)
+        @current_user = user
+      end
+    end
+  end
+
+  def set_audit_info
+    Thread.current.thread_variable_set(:current_user_id, current_user&.id)
+    Thread.current.thread_variable_set(:changed_by, "#{self.class}/#{action_name}")
+  end
+
+  def render_unauthorized(realm = "Application")
+    self.headers["WWW-Authenticate"] = %(Token realm="#{realm.gsub(/"/, "")}")
+    render json: { error: 'Bad credentials' }, status: :unauthorized
   end
 end

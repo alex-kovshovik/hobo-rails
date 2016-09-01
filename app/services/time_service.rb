@@ -1,7 +1,6 @@
 class TimeService
   def initialize(user)
     @timezone = user.family.timezone
-    # @now_utc = DateTime.now.utc
   end
 
   def week_start_time

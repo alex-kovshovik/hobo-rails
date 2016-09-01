@@ -1,7 +1,6 @@
 # Facilitates authentication.
 class AuthController < ApplicationController
-  skip_before_action :authenticate_user!
-  acts_as_token_authentication_handler_for User, except: [:register, :check]
+  skip_before_action :authenticate
 
   before_action :validate_facebook_token, only: :register
 
@@ -26,11 +25,9 @@ class AuthController < ApplicationController
   #  - with HTTP OK (200) if correct
   #  - with HTTP UNAUTHORIZED (401) if incorrect
   def check
-    user = User.find_by!(email: params[:email], authentication_token: params[:token])
+    user = User.find_by!(email: params[:email], api_key: params[:token])
 
     render json: user, status: :ok
-  rescue
-    head :unauthorized
   end
 
   private

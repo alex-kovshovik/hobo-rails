@@ -6,4 +6,10 @@ describe User do
 
     expect(user.budgets.count).to be > 0
   end
+
+  it 'generates secure api key' do
+    user = create(:user)
+
+    expect(user.api_key).not_to be_empty
+  end
 end

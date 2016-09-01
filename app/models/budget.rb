@@ -1,4 +1,4 @@
-class Budget < ActiveRecord::Base
+class Budget < ApplicationRecord
   DEFAULTS = %w(Grocery Utility Gas Other)
 
   belongs_to :family

@@ -2,31 +2,30 @@ require 'rails_helper'
 
 describe ExpensesController do
   before do
-    @request.env['devise.mapping'] = Devise.mappings[:user]
-    sign_in user
+    allow(subject).to receive(:authenticate)
+    allow(subject).to receive(:current_user).and_return(user)
   end
 
-  let(:family) { create(:family) }
-  let(:user) { create(:user, family: family) }
-  let(:budget) { create(:budget, family: family, name: 'Grocery') }
-  let!(:expense) { create(:expense, budget: budget) }
+  let(:user) { create(:user) }
+  let(:grocery) { user.budgets.where(name: 'Grocery').first }
+  let(:gas) { user.budgets.where(name: 'Gas').first }
+  let!(:expense) { create(:expense, budget: grocery) }
 
   describe 'GET #index' do
-    let(:budget_kids) { create(:budget, name: 'Kids') }
-    let!(:expense2) { create(:expense, budget: budget_kids) }
+    let!(:expense2) { create(:expense, budget: gas) }
 
     context 'budget' do
       it 'renders all expenses for the budget' do
-        get 'index', budget_id: budget.id
+        get :index, params: { budget_id: grocery.id }
 
         expect(response).to have_http_status(:ok)
-        expect(assigns(:expenses).count).to eq(1) # Only for one budget
+        expect(assigns(:expenses).count).to eq(1) # Only for one budget - Grocery
       end
     end
 
     context 'global' do
       it 'renders all expenses for the family' do
-        get 'index'
+        get :index
 
         expect(response).to have_http_status(:ok)
         expect(assigns(:expenses).count).to eq(2) # Across all budgets
@@ -36,7 +35,7 @@ describe ExpensesController do
 
   describe 'GET #show' do
     it 'renders expense' do
-      get 'show', budget_id: budget.id, id: expense.id
+      get :show, params: { budget_id: grocery.id, id: expense.id }
 
       expect(response).to have_http_status(:ok)
       expect(assigns(:expense)).to eq(expense)
@@ -45,7 +44,7 @@ describe ExpensesController do
 
   describe 'POST #create' do
     it 'creates new expense' do
-      post 'create', budget_id: budget.id, expense: { amount: 32.23, comment: 'no comment' }
+      post :create, params: { budget_id: grocery.id, expense: { amount: 32.23, comment: 'no comment' } }
 
       expect(response).to have_http_status(:ok)
 
@@ -58,7 +57,7 @@ describe ExpensesController do
     end
 
     it 'renders errors properly' do
-      post 'create', budget_id: budget.id, expense: { comment: 'no amount - error' }
+      post :create, params: { budget_id: grocery.id, expense: { comment: 'no amount - error' } }
 
       expect(response).to have_http_status(:unprocessable_entity)
 
