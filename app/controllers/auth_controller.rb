@@ -9,12 +9,6 @@ class AuthController < ApplicationController
   def register
     user = User.find_or_initialize_by(email: params[:email])
 
-    if user.new_record?
-      user.password = Devise.friendly_token.first(10)
-      user.password_confirmation = user.password
-      user.save!
-    end
-
     update_user_profile(user, @profile)
 
     render json: user, status: :ok
