@@ -61,16 +61,16 @@ class ExpensesController < ApplicationController
     expenses = expenses.where(budget_id: params[:budget_id]) if params[:budget_id]
 
 
-    if params[:week]
-      week = params[:week].to_i
+    if params[:month]
+      month = params[:month].to_i
       time_service = TimeService.new(current_user)
 
-      week_start_time = time_service.week_start_time
-      week_end_time = time_service.week_end_time
+      month_start_time = time_service.month_start_time
+      month_end_time = time_service.month_end_time
 
-      # week param is a negative number darn it
-      start_time = week_start_time + week.weeks
-      end_time = week_end_time + week.weeks
+      # month param is a negative number darn it
+      start_time = month_start_time + month.months
+      end_time = month_end_time + month.months
 
       expenses = expenses.where('expenses.created_at between ? and ?', start_time, end_time)
     end

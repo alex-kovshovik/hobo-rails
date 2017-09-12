@@ -1,13 +1,13 @@
 class UserSerializer < ActiveModel::Serializer
-  attributes :id, :email, :api_key, :week_fraction, :created_at, :currency
+  attributes :id, :email, :api_key, :month_fraction, :created_at, :currency
 
-  def week_fraction
+  def month_fraction
     time = TimeService.new(object)
 
-    week_start_time = time.week_start_time
-    week_end_time = time.week_end_time
+    month_start_time = time.month_start_time
+    month_end_time = time.month_end_time
 
-    (time.now - week_start_time) / (week_end_time - week_start_time)
+    (time.now - month_start_time) / (month_end_time - month_start_time)
   end
 
   def currency
